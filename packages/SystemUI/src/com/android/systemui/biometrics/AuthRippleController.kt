@@ -23,6 +23,8 @@ import android.content.Context
 import android.graphics.Point
 import android.hardware.biometrics.BiometricFingerprintConstants
 import android.hardware.biometrics.BiometricSourceType
+import android.os.UserHandle
+import android.provider.Settings
 import android.util.DisplayMetrics
 import androidx.annotation.VisibleForTesting
 import com.android.keyguard.KeyguardUpdateMonitor
@@ -47,7 +49,6 @@ import com.android.systemui.statusbar.NotificationShadeWindowController
 import com.android.systemui.statusbar.commandline.Command
 import com.android.systemui.statusbar.commandline.CommandRegistry
 import com.android.systemui.statusbar.phone.BiometricUnlockController
-import com.android.systemui.statusbar.phone.BiometricUnlockController.MODE_WAKE_AND_UNLOCK
 import com.android.systemui.statusbar.policy.ConfigurationController
 import com.android.systemui.statusbar.policy.KeyguardStateController
 import com.android.systemui.util.ViewController
@@ -98,7 +99,8 @@ class AuthRippleController @Inject constructor(
     private var udfpsRadius: Float = -1f
 
     private val isRippleEnabled: Boolean
-        get() = biometricUnlockController.mode != MODE_WAKE_AND_UNLOCK
+        get() = Settings.System.getIntForUser(context.contentResolver,
+            Settings.System.ENABLE_RIPPLE_EFFECT, 0, UserHandle.USER_CURRENT) == 1
 
     override fun start() {
         init()
